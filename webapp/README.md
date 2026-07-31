@@ -47,6 +47,30 @@ Aplikacja wystartuje na `http://localhost:3000`. Baza danych zostanie
 utworzona automatycznie w `data/app.db` i wypełniona pozycjami z arkusza
 przy pierwszym uruchomieniu.
 
+## Szybki test na telefonie (ta sama sieć Wi-Fi)
+
+Najprostszy sposób, żeby sprawdzić aplikację na telefonie, bez wykupywania
+hostingu — uruchom ją na komputerze i wejdź z telefonu po adresie IP tego
+komputera:
+
+```bash
+npm install
+npm run build
+npm run start
+```
+
+Sprawdź lokalny adres IP komputera (`ipconfig` na Windows, `ifconfig` /
+`ip addr` na macOS i Linuksie — coś w stylu `192.168.1.15`) i na telefonie
+otwórz `http://192.168.1.15:3000`.
+
+Ważne: wchodź z komputera **pod tym samym adresem IP** (nie przez
+`localhost`), zanim wygenerujesz linki z zaproszeniem — linki budowane są
+na podstawie adresu, spod którego korzystasz z aplikacji, więc link
+utworzony na `localhost` nie otworzy się na telefonie.
+
+Uwaga: komputer musi być włączony i w tej samej sieci. Do stałego dostępu
+(także spoza domu) skorzystaj z opcji wdrożenia poniżej.
+
 ## Wdrożenie (produkcja)
 
 ### Opcja 1: Docker / docker-compose (polecane, samodzielny hosting)

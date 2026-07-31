@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createMember, getInviteByToken, incrementInviteUse } from "@/lib/db";
-import { SESSION_COOKIE, getCurrentMember } from "@/lib/session";
+import {
+  SESSION_COOKIE,
+  getCurrentMember,
+  sessionCookieOptions,
+} from "@/lib/session";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
@@ -29,13 +33,7 @@ export async function POST(request: Request) {
   incrementInviteUse(invite.id);
 
   const store = await cookies();
-  store.set(SESSION_COOKIE, member.id, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 365,
-  });
+  store.set(SESSION_COOKIE, member.id, sessionCookieOptions(request));
 
   return NextResponse.json({
     member: { id: member.id, name: member.name, role: member.role },

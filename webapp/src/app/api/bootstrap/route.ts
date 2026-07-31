@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { countMembers, createMember } from "@/lib/db";
-import { SESSION_COOKIE } from "@/lib/session";
+import { SESSION_COOKIE, sessionCookieOptions } from "@/lib/session";
 
 export async function POST(request: Request) {
   if (countMembers() > 0) {
@@ -19,13 +19,7 @@ export async function POST(request: Request) {
 
   const member = createMember(name, "OWNER");
   const store = await cookies();
-  store.set(SESSION_COOKIE, member.id, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 365,
-  });
+  store.set(SESSION_COOKIE, member.id, sessionCookieOptions(request));
 
   return NextResponse.json({ member: { id: member.id, name: member.name, role: member.role } });
 }
