@@ -73,7 +73,33 @@ Uwaga: komputer musi być włączony i w tej samej sieci. Do stałego dostępu
 
 ## Wdrożenie (produkcja)
 
-### Opcja 1: Docker / docker-compose (polecane, samodzielny hosting)
+### Opcja 1: Render — wdrożenie z gotowego pliku `render.yaml` (najprostsze)
+
+W katalogu głównym repozytorium leży `render.yaml`, który opisuje całą
+usługę: obraz z `webapp/Dockerfile`, region Frankfurt i **trwały dysk
+zamontowany pod `/app/data`** (bez niego lista kasowałaby się przy każdym
+wdrożeniu). Dzięki temu nie trzeba niczego konfigurować ręcznie:
+
+1. Wejdź na [render.com](https://render.com) i załóż konto przez GitHuba
+   („Sign in with GitHub"), autoryzując dostęp do repozytorium
+   `Micro_Agro-Strateg`.
+2. Kliknij **New +** → **Blueprint**.
+3. Wybierz repozytorium `woojtaas/Micro_Agro-Strateg`, gałąź `main`.
+4. Render wczyta `render.yaml` i pokaże usługę `micro-agro-checklist` —
+   kliknij **Apply**.
+5. Poczekaj na zakończenie budowania (pierwsze trwa kilka minut, bo
+   kompilowany jest natywny moduł `better-sqlite3`). Gdy status zmieni się
+   na **Live**, adres aplikacji pojawi się u góry strony usługi.
+
+Uwaga o kosztach: plan `starter` w `render.yaml` jest płatny (od 7 USD/mies.
+plus ok. 0,25 USD za GB dysku). Trwały dysk nie jest dostępny na darmowym
+planie Rendera, a darmowe usługi usypiają po 15 minutach — dlatego dla tej
+aplikacji darmowy plan Rendera nie jest opcją.
+
+**Zaraz po pierwszym uruchomieniu otwórz adres aplikacji i załóż listę na
+siebie** — pierwsza osoba, która wejdzie na stronę, zostaje właścicielem.
+
+### Opcja 2: Docker / docker-compose (samodzielny hosting)
 
 ```bash
 docker compose up -d --build
@@ -88,14 +114,14 @@ proxy (np. Caddy, nginx lub Traefik) z certyfikatem TLS i skierować ruch
 na `localhost:3000`, albo wdrożyć na VPS-ie i skorzystać z gotowego
 `docker-compose.yml`.
 
-### Opcja 2: dowolny hosting Node.js (Render, Railway, Fly.io, VPS)
+### Opcja 3: dowolny hosting Node.js (Railway, Fly.io, VPS)
 
 1. `npm install && npm run build`
 2. `npm run start` (nasłuchuje na porcie z `PORT`, domyślnie 3000)
 3. Zamontuj trwały dysk/wolumin pod katalog `data/` — bez tego baza
    danych zniknie przy każdym redeployu.
 
-### Opcja 3: Vercel
+### Opcja 4: Vercel
 
 Next.js działa natywnie na Vercelu, **ale** środowisko serwerless ma
 system plików tylko do odczytu i bez trwałości między requestami — plik
