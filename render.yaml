@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: micro-agro-checklist
+    runtime: docker
+    plan: starter
+    region: frankfurt
+    dockerfilePath: ./webapp/Dockerfile
+    dockerContext: ./webapp
+    healthCheckPath: /
+    autoDeploy: true
+    # The checklist lives in a SQLite file. Without this disk every deploy
+    # and every restart would hand back an empty list, so the mount path
+    # must stay in sync with the `data/` directory db.ts opens.
+    disk:
+      name: checklist-data
+      mountPath: /app/data
+      sizeGB: 1
